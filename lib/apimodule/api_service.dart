@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:http/http.dart';
 
 Future<List<Cat>> fetchPhotos({
   int page = 1,
@@ -8,7 +10,7 @@ Future<List<Cat>> fetchPhotos({
 }) async {
   //final String apiUrl = 'https://api.unsplash.com/photos';
   final String apiUrl =
-      'https://api.thecatapi.com/v1/images/search?format=json&limit=10';
+      'https://api.thecatapi.com/v1/images/search?has_breeds=1&format=json&limit=10';
   final response = await http.get(
     Uri.parse(apiUrl),
     headers: {
@@ -33,20 +35,15 @@ Future<List<Cat>> fetchPhotos({
   }
 }
 
-Future<CatInfo> fetchCatDetail() async {
+Future<CatInfo> fetchCatDetail(String cat_id) async {
   //final String apiUrl = 'https://api.unsplash.com/photos';
-  final String apiUrl = 'https://api.thecatapi.com/v1/images/0XYvRd7oD';
+  final String apiUrl = 'https://api.thecatapi.com/v1/images/$cat_id';
+  print('cat_id > ${cat_id}');
   final response = await http.get(
     Uri.parse(apiUrl),
-   /* headers: {
-      'Content-Type': 'application/json',
-      'x-api-key':
-          'live_YD6cYybx8FKastDhWRwsmjNaTRdQYRB78yRCBXHEOcOrNUSLMOZ2l1Ifh53JzPKO',
-    },*/
   );
 
   if (response.statusCode == 200) {
-    //final List<dynamic> jsonData = json.decode(response.body);
     final dynamic jsonData = json.decode(response.body);
     final CatInfo catInfo = CatInfo.fromJson(jsonData);
     print('cat_breed_info > ${catInfo.url}');
@@ -129,5 +126,55 @@ class CatBreedInfo {
       countryCodes: json['country_codes'],
       countryCode: json['country_code'],
     );
+  }
+}
+
+Future<void> uplooadImage() async {
+  final url = Uri.parse('https://api.thecatapi.com/v1/images/upload');
+  final request = http.MultipartRequest('POST', url)
+    ..headers['x-api-key'] = "live_YD6cYybx8FKastDhWRwsmjNaTRdQYRB78yRCBXHEOcOrNUSLMOZ2l1Ifh53JzPKO";
+  // ..fields['sub_id'] = subId; // Optional sub_id field
+
+  //final file = await http.MultipartFile.fromPath('file', "asset/cat.jpg");
+  // request.files.add(file);
+
+  File file = File('asset/cat.jpg');
+  List<int> fileBytes = await file.readAsBytes();
+
+  MultipartFile filePart = MultipartFile.fromBytes(
+    'file',
+    fileBytes,
+    filename: 'asset/cat.jpg',
+  );
+  request.files.add(filePart);
+
+  try {
+    final response = await request.send();
+    if (response.statusCode == 200) {
+      print('Image uploaded successfully.');
+    } else {
+      print('Failed to upload image. Status code: ${response.statusCode}');
+    }
+  } catch (e) {
+    print('Error uploading image: $e');
+  }
+}
+
+Future<void> uploadImage() async {
+  var postUri = Uri.parse("https://api.thecatapi.com/v1/images/upload");
+  var request = new http.MultipartRequest("POST", postUri);
+  request.fields['x-api-key'] =
+      "live_YD6cYybx8FKastDhWRwsmjNaTRdQYRB78yRCBXHEOcOrNUSLMOZ2l1Ifh53JzPKO";
+  request.fields['user'] = 'blah';
+  request.files.add(new http.MultipartFile.fromBytes(
+      'file', await File("asset/cat.jpg").readAsBytes()));
+  //contentType: new MediaType('image', 'jpeg')));
+
+  try {
+    request.send().then((response) {
+      if (response.statusCode == 200) print("Uploaded!");
+    });
+  } catch (e) {
+    print('Error uploading image: $e');
   }
 }
