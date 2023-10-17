@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:learning_dart/apimodule/api_service.dart';
 import 'package:learning_dart/drawer.dart';
 import 'package:learning_dart/pages/MyHomePage.dart';
+import 'package:learning_dart/pages/navpages/main_page.dart';
 
 void main() {
   //MaterialApp(home: MyHomePage());
@@ -20,7 +21,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,*/
         primarySwatch: Colors.purple
       ),
-      home: MyHomePage(),
+      home: MainPage(),
     );
   }
 }

@@ -1,13 +1,13 @@
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+
 import 'package:learning_dart/apimodule/api_service.dart';
 import 'package:learning_dart/drawer.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
-import 'package:http/http.dart' as http;
 
 import 'CatDetailScreen.dart';
+import 'UploadImagePage.dart';
 
 class MyHomePage extends StatefulWidget {
   @override
@@ -18,49 +18,15 @@ class _MyHomePageState extends State<MyHomePage> {
   late Future<void> _createDataFuture;
   List<Cat> cats = [];
   bool shadowColor = true;
-  File? image = null;
-  final _picker = ImagePicker();
   bool loading = false;
 
-  Future getImage()async{
-    final pickedFile = await _picker.pickImage(source: ImageSource.gallery, imageQuality: 80);
-    if(pickedFile != null){
-      image = File(pickedFile.path);
-      setState(() {
-      });
-    }else{
-      print("Image pciking not successful");
-    }
-  }
-
-  Future uploadImage()async{
-    setState(() {
-      loading = true;
-    });
-
-    var stream = http.ByteStream(image!.openRead());
-    stream.cast();
-
-    var length = await image?.length();
-
-    var postUri = Uri.parse("https://api.thecatapi.com/v1/images/upload");
-    var request = new http.MultipartRequest("POST", postUri);
-    request.fields['x-api-key'] =
-    "live_YD6cYybx8FKastDhWRwsmjNaTRdQYRB78yRCBXHEOcOrNUSLMOZ2l1Ifh53JzPKO";
-    request.fields['user'] = 'blah';
-    request.files.add(http.MultipartFile(
-        'file', stream, length!));
-    //contentType: new MediaType('image', 'jpeg')));
-
-    try {
-     await request.send().then((response) {
-        if (response.statusCode == 200) print("Uploaded!");
-      });
-    } catch (e) {
-      print('Error uploading image: $e');
-    }
-
-  }
+  List<String> catBreeds = [
+    'Abyssinian',
+    'Siamese',
+    'Maine Coon',
+    'Persian',
+    'Bengal',
+  ];
 
   @override
   void initState() {
@@ -93,7 +59,46 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return ModalProgressHUD(inAsyncCall: loading,
+    List<String> catBreeds = [
+      'Abyssinian',
+      'Siamese',
+      'Maine Coon',
+      'Persian',
+      'Bengal'
+    ]; // Replace this with your list of cat breeds
+
+    List<Widget> catBreedChips = catBreeds.map((breed) {
+      return Container(
+        padding: const EdgeInsets.all(4.0),
+        child: InkWell(
+          onTap: () {
+            // Handle the chip tap action here
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.purple,
+              border: Border.all(
+                color: Colors.purple.shade700, // Customize border color
+                width: 1.0, // Customize border width
+              ),
+              borderRadius:
+                  BorderRadius.circular(16.0), // Customize chip border radius
+            ),
+            padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
+            // Customize chip padding
+            child: Text(
+              breed,
+              style: TextStyle(
+                color: Colors.white, // Customize text color
+              ),
+            ),
+          ),
+        ),
+      );
+    }).toList();
+
+    return ModalProgressHUD(
+        inAsyncCall: loading,
         child: Scaffold(
           appBar: AppBar(
               backgroundColor: Color(0xFFFFD1DC),
@@ -114,7 +119,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 IconButton(
                   tooltip: 'Demo tooltip',
                   icon: const Icon(
-                    Icons.favorite,
+                    Icons.filter_1_outlined,
                     color: Colors.purple,
                   ),
                   onPressed: () {},
@@ -130,52 +135,15 @@ class _MyHomePageState extends State<MyHomePage> {
               ]),
           body: Column(
             children: [
+              Container(
+                  margin: const EdgeInsets.only(top: 16.0),
+                  child: Wrap(children: catBreedChips)),
               ElevatedButton(
                 onPressed: () {
                   // Call the fetchPhotos function when the button is pressed
                   _loadCatImages();
                 },
                 child: Text('Load Photos', textDirection: TextDirection.ltr),
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Container(
-                    margin: EdgeInsets.only(bottom: 16.0),
-                    child: const SizedBox(
-                      width: 200,
-                      child: TextField(
-                        //  controller: _controller,
-                        decoration: InputDecoration(hintText: 'Enter Title'),
-                      ),
-                    ),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        // _futureAlbum = createAlbum(_controller.text);
-                       // _createDataFuture = uploadImage();
-                        getImage();
-                      });
-                    },
-                    child: const Text('Select Image'),
-                  ),
-                 /* FutureBuilder<void>(
-                    future: _createDataFuture,
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        // While the data is being created, display a loading spinner
-                        return CircularProgressIndicator();
-                      } else if (snapshot.hasError) {
-                        // Handle any errors that occurred during data creation
-                        return Text('Error: ${snapshot.error}');
-                      } else {
-                        // Data creation is complete, display a success message
-                        return Text('Data created successfully! :');
-                      }
-                    },
-                  ),*/
-                ],
               ),
               Expanded(
                 child: GridView.builder(
@@ -239,19 +207,18 @@ class _MyHomePageState extends State<MyHomePage> {
                   },
                 ),
               ),
-              Container(
-                child: image == null? Center(child: Text("pick image"),) : Center(
-                  child: Image.file(File(image!.path).absolute,
-                  height:100,
-                  width : 100,
-                  fit :BoxFit.cover,),
-                ),
-              )
             ],
           ),
           drawer: NavDrawer(),
           floatingActionButton: FloatingActionButton(
-            onPressed: uploadImage,
+            onPressed: () {
+              // Navigate to the second screen
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const UploadImagePage()),
+              );
+            },
             child: Icon(Icons.upload),
           ),
         ));
