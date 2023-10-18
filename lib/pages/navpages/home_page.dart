@@ -1,13 +1,26 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:learning_dart/cubit/app_cubits.dart';
 import 'package:learning_dart/widgets/AppLargeText.dart';
 import 'package:learning_dart/widgets/AppText.dart';
 import 'package:learning_dart/widgets/CustomMainPageVerticalList.dart';
 import 'package:learning_dart/widgets/HorizontalList.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  @override
+  void initState(){
+    super.initState();
+  //  BlocProvider.of<AppCubits>(context).fetchCats();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +33,7 @@ class HomePage extends StatelessWidget {
                 margin: EdgeInsets.only(top: 46),
                 padding:
                     EdgeInsets.only(top: 30, bottom: 30, right: 10, left: 10),
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: Colors.white,
                 ),
                 child: Row(
@@ -28,19 +41,20 @@ class HomePage extends StatelessWidget {
                     Container(
                       width: 70,
                       height: 70,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         shape: BoxShape.circle,
                         color: Colors
                             .black54, // Customize the icon background color
                       ),
-                      child: Icon(
+                      child: const Icon(
                         Icons.person, // Replace with your user icon
                         size: 40, // Customize the icon size
                         color: Colors.purple, // Customize the icon color
                       ),
                     ),
-                    SizedBox(width: 16), // Add spacing between icon and text
-                    Column(
+                    const SizedBox(width: 16),
+                    // Add spacing between icon and text
+                    const Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
@@ -62,20 +76,20 @@ class HomePage extends StatelessWidget {
                       ],
                     ),
                     const Spacer(),
-                    Icon(
+                    const Icon(
                       Icons.search, // Replace with your search icon
                       color: Colors.purple, // Customize the icon color
                     ),
                     const Spacer(),
-                    Icon(
-                      Icons
-                          .notifications, // Replace with your notifications icon
+                    const Icon(
+                      Icons.notifications,
+                      // Replace with your notifications icon
                       color: Colors.purple, // Customize the icon color
                     ),
                   ],
                 ),
               ),
-              Expanded(
+              const Expanded(
                 child: CustomMainPageVerticalList(),
               )
             ],

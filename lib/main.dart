@@ -1,7 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_dart/apimodule/api_service.dart';
+import 'package:learning_dart/cubit/app_cubits.dart';
+import 'package:learning_dart/cubit/app_qubit_logics.dart';
 import 'package:learning_dart/drawer.dart';
 import 'package:learning_dart/pages/MyHomePage.dart';
 import 'package:learning_dart/pages/navpages/main_page.dart';
@@ -21,7 +24,14 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,*/
         primarySwatch: Colors.purple
       ),
-      home: MainPage(),
+      home: BlocProvider<AppCubits>(
+        create: (context) => AppCubits(
+          data: DataServices()
+        ),
+        child: AppCubitLogics() ,
+      )
+
+      //MainPage(),
     );
   }
 }

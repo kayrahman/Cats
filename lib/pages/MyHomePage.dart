@@ -6,6 +6,7 @@ import 'package:learning_dart/apimodule/api_service.dart';
 import 'package:learning_dart/drawer.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
+import '../model/data_model.dart';
 import 'CatDetailScreen.dart';
 import 'UploadImagePage.dart';
 
@@ -35,7 +36,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // _loadCatImages();
   }
 
-  Future<void> _loadCatImages() async {
+  /*Future<void> _loadCatImages() async {
     try {
       final List<Cat> fetchedImages = await fetchPhotos();
       setState(() {
@@ -44,9 +45,9 @@ class _MyHomePageState extends State<MyHomePage> {
     } catch (e) {
       // Handle error
     }
-  }
+  }*/
 
-  Future<void> _sendCatImages() async {
+  /*Future<void> _sendCatImages() async {
     try {
       final List<Cat> fetchedImages = await fetchPhotos();
       setState(() {
@@ -56,7 +57,7 @@ class _MyHomePageState extends State<MyHomePage> {
       print('send_image_error > $e');
     }
   }
-
+*/
   @override
   Widget build(BuildContext context) {
     List<String> catBreeds = [
@@ -65,7 +66,7 @@ class _MyHomePageState extends State<MyHomePage> {
       'Maine Coon',
       'Persian',
       'Bengal'
-    ]; // Replace this with your list of cat breeds
+    ];
 
     List<Widget> catBreedChips = catBreeds.map((breed) {
       return Container(
@@ -141,7 +142,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ElevatedButton(
                 onPressed: () {
                   // Call the fetchPhotos function when the button is pressed
-                  _loadCatImages();
+                  //_loadCatImages();
                 },
                 child: Text('Load Photos', textDirection: TextDirection.ltr),
               ),

@@ -1,9 +1,6 @@
-
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/services.dart';
-import 'package:learning_dart/apimodule/api_service.dart';
-import 'package:learning_dart/drawer.dart';
+
+import '../model/data_model.dart';
 
 class CatDetailScreen extends StatefulWidget {
   final Cat cat;
@@ -22,10 +19,10 @@ class _CatDetailScreenState extends State<CatDetailScreen> {
   void initState() {
     super.initState();
     loading = true;
-    _loadCatImages();
+   // _loadCatImages();
   }
 
-  Future<void> _loadCatImages() async {
+ /* Future<void> _loadCatImages() async {
     try {
       final CatInfo info = await fetchCatDetail(widget.cat.id);
       setState(() {
@@ -36,7 +33,7 @@ class _CatDetailScreenState extends State<CatDetailScreen> {
       // Handle error
       print('cat_breed_info_error > $e');
     }
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {
