@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:learning_dart/widgets/HorizontalList.dart';
-
 import 'AppLargeText.dart';
 import 'AppText.dart';
+import 'HorizontalList.dart';
 
 class CustomMainPageVerticalList extends StatelessWidget {
   const CustomMainPageVerticalList({super.key});

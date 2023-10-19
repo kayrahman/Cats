@@ -3,10 +3,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_dart/cubit/app_cubits.dart';
-import 'package:learning_dart/widgets/AppLargeText.dart';
-import 'package:learning_dart/widgets/AppText.dart';
-import 'package:learning_dart/widgets/CustomMainPageVerticalList.dart';
-import 'package:learning_dart/widgets/HorizontalList.dart';
+import 'package:learning_dart/features/top_courses/presentation/widgets/CustomMainPageVerticalList.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
