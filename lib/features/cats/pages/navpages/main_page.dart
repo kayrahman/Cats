@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:learning_dart/pages/navpages/courses_page.dart';
-import 'package:learning_dart/pages/navpages/home_page.dart';
-import 'package:learning_dart/pages/navpages/profile_page.dart';
-import 'package:learning_dart/pages/navpages/saved_page.dart';
+import 'package:learning_dart/features/cats/cubit/app_cubits.dart';
+import 'package:learning_dart/features/cats/pages/navpages/courses_page.dart';
+import 'package:learning_dart/features/cats/pages/navpages/home_page.dart';
+import 'package:learning_dart/features/cats/pages/navpages/profile_page.dart';
+import 'package:learning_dart/features/cats/pages/navpages/saved_page.dart';
 
-import '../../cubit/app_cubits.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});

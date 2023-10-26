@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:learning_dart/features/cats/model/data_model.dart';
 
-import '../model/data_model.dart';
 
 class CatDetailScreen extends StatefulWidget {
   final Cat cat;

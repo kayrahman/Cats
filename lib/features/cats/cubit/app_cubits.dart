@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
-import 'package:learning_dart/apimodule/api_service.dart';
-import 'package:learning_dart/cubit/app_cubit_states.dart';
-import 'package:learning_dart/model/data_model.dart';
+import 'package:learning_dart/features/cats/apimodule/api_service.dart';
+import 'package:learning_dart/features/cats/cubit/app_cubit_states.dart';
+import 'package:learning_dart/features/cats/model/data_model.dart';
 
 class AppCubits extends Cubit<CubitStates> {
   AppCubits({required this.data}) : super(InitialState()) {

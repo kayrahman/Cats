@@ -1,13 +1,7 @@
-import 'package:cached_network_image/cached_network_image.dart';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:learning_dart/apimodule/api_service.dart';
-import 'package:learning_dart/cubit/app_cubits.dart';
-import 'package:learning_dart/cubit/app_qubit_logics.dart';
-import 'package:learning_dart/drawer.dart';
-import 'package:learning_dart/pages/MyHomePage.dart';
-import 'package:learning_dart/pages/navpages/main_page.dart';
+import 'package:learning_dart/features/quran/presentation/pages/chapter_list_page.dart';
+
 
 void main() {
   //MaterialApp(home: MyHomePage());
@@ -18,18 +12,20 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'BJIT Academy',
+      title: 'Al Quran',
       theme: ThemeData(
        /* colorSchemeSeed: const Color(0xff6750a4),
         useMaterial3: true,*/
         primarySwatch: Colors.purple
       ),
-      home: BlocProvider<AppCubits>(
+      home: ChapterListPage()
+
+      /*BlocProvider<AppCubits>(
         create: (context) => AppCubits(
           data: DataServices()
         ),
         child: AppCubitLogics() ,
-      )
+      )*/
 
       //MainPage(),
     );

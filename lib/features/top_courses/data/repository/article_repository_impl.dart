@@ -30,7 +30,7 @@ class ArticleRepositoryImpl implements ArticleRepository {
         DioError(
           error: httpResponse.response.statusMessage,
           response: httpResponse.response,
-          type: DioErrorType.response,
+          //type: DioErrorType.toString(),
           requestOptions: httpResponse.response.requestOptions
         )
       );

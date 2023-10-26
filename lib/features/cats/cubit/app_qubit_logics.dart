@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:learning_dart/cubit/app_cubit_states.dart';
-import 'package:learning_dart/cubit/app_cubits.dart';
-import 'package:learning_dart/pages/navpages/home_page.dart';
-import 'package:learning_dart/pages/navpages/main_page.dart';
+import 'package:learning_dart/features/cats/cubit/app_cubit_states.dart';
+import 'package:learning_dart/features/cats/cubit/app_cubits.dart';
+import 'package:learning_dart/features/cats/pages/navpages/home_page.dart';
+import 'package:learning_dart/features/cats/pages/navpages/main_page.dart';
 
 class AppCubitLogics extends StatefulWidget {
   const AppCubitLogics({super.key});

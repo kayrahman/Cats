@@ -1,12 +1,9 @@
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-
-import 'package:learning_dart/apimodule/api_service.dart';
-import 'package:learning_dart/drawer.dart';
+import 'package:learning_dart/features/cats/drawer.dart';
+import 'package:learning_dart/features/cats/model/data_model.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
-
-import '../model/data_model.dart';
 import 'CatDetailScreen.dart';
 import 'UploadImagePage.dart';
 
