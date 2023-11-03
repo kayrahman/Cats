@@ -1,49 +1,70 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:learning_dart/features/quran/data/data_sources/remote/quran_api_service.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_dart/features/quran/data/models/chapter_model.dart';
-import 'package:learning_dart/features/top_courses/presentation/widgets/AppLargeText.dart';
-import 'package:learning_dart/features/top_courses/presentation/widgets/AppText.dart';
-import 'package:dio/dio.dart';
+import 'package:learning_dart/features/quran/presentation/bloc/local/lcoal_chapter_state.dart';
+import 'package:learning_dart/features/quran/presentation/bloc/local/local_chapter_bloc.dart';
+import 'package:learning_dart/features/quran/presentation/bloc/local/local_chapter_event.dart';
+import 'package:learning_dart/features/quran/presentation/bloc/remote/remote_quran_bloc.dart';
+import 'package:learning_dart/features/quran/presentation/bloc/remote/remote_quran_state.dart';
+import 'package:learning_dart/injection_container.dart';
 
 class ChapterListPage extends StatelessWidget {
   const ChapterListPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Al Quran"),
+    return BlocProvider<LocalChapterBloc>(
+      // Wrap with BlocProvider
+      create: (_) => sl<LocalChapterBloc>(),
+      // Initialize your LocalChapterBloc here
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text("Al Quran"),
+        ),
+        body: _buildBody(context),
       ),
-      body: _body(),
     );
   }
 
-  FutureBuilder _body() {
-    final apiService =
-        QuranApiService(Dio(BaseOptions(contentType: "application/json")));
-    return FutureBuilder(
-        future: apiService.getChapters(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            // The future is still in progress.
-            return const Center(
-              child: CircularProgressIndicator(), // Center the CircularProgressIndicator
-            );// Or any other loading indicator.
-          } else if (snapshot.hasError) {
-            // An error occurred.
-            return Text('Error: ${snapshot.error}');
-          } else if (snapshot.data == null) {
-            // The future completed, but the data is null.
-            return Text('Data is null.');
+  _buildBody(BuildContext context) {
+    print("ChapterListPage > body");
+
+    BlocListener<LocalChapterBloc, LocalChapterState>(
+      listener: (context, state) {
+        if (state is LocalChaptersSavedDone) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text("Data saved successfully!"),
+              duration: Duration(seconds: 2),
+            ),
+          );
+        }
+      },
+    );
+
+    return BlocBuilder<RemoteQuranBloc, RemoteQuranState>(
+      builder: (_, state) {
+        if (state is RemoteQuranChapterListLoading) {
+          return const Center(child: CupertinoActivityIndicator());
+        }
+        if (state is RemoteQuranChapterListError) {
+          return const Center(child: Icon(Icons.refresh));
+        }
+        if (state is RemoteQuranChapterListDone) {
+          print("ChapterListPage > state chapter list done");
+          if (state.chapters!.chapters.isNotEmpty) {
+            return _chapters(context, state.chapters!);
           } else {
-            // Data is available and not null.
-            // You can access the data using snapshot.data.
-            return _chapters(snapshot.data);
+            print("ChapterListPage > state chapter list empty");
           }
-        });
+        }
+        return const SizedBox();
+      },
+    );
   }
 
-  Widget _chapters(RootChapterModel chapters) {
+  Widget _chapters(BuildContext context, ChapterListModel chapters) {
     return ListView.builder(
       itemCount: chapters.chapters.length,
       itemBuilder: (_, index) {
@@ -64,24 +85,24 @@ class ChapterListPage extends StatelessWidget {
                     Text(
                       //"Surah ${chapter.id}",
                       "${chapter.id}",
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(width: 24),
+                    const SizedBox(width: 24),
                     Text(
                       //"Surah ${chapter.id}",
-                      "${chapter.name_arabic}",
-                      style: TextStyle(
+                      "${chapter.nameArabic}",
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(width: 8),
+                    const SizedBox(width: 8),
                     Text(
-                      "[${chapter.name_complex}]",
-                      style: TextStyle(
+                      "[${chapter.nameComplex}]",
+                      style: const TextStyle(
                         fontSize: 16,
                         color: Colors.grey,
                       ),
@@ -89,11 +110,23 @@ class ChapterListPage extends StatelessWidget {
                   ],
                 ),
                 Text(
-                  "[${chapter.verses_count} verses]",
-                  style: TextStyle(
+                  "[${chapter.versesCount} verses]",
+                  style: const TextStyle(
                     fontSize: 16,
                     color: Colors.grey,
                   ),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    //isBookmarked = !isBookmarked;
+                    BlocProvider.of<LocalChapterBloc>(context)
+                        .add(SaveChapter(chapter));
+                  },
+                  child: const Icon(
+                      // isBookmarked ? Icons.bookmark : Icons.bookmark_border,
+                      // color: isBookmarked ? Colors.red : Colors.grey,
+                      Icons.bookmark,
+                      color: Colors.grey),
                 ),
               ],
             ),

@@ -1,54 +1,112 @@
-import 'package:json_annotation/json_annotation.dart';
-part 'chapter_model.g.dart';
+import 'dart:convert';
 
-@JsonSerializable()
-class RootChapterModel {
+import 'package:floor/floor.dart';
+import '../../domain/entities/chapter_entity.dart';
+
+class ChapterListModel {
   List<ChapterModel> chapters;
 
-  RootChapterModel({required this.chapters});
+  ChapterListModel({required this.chapters});
 
-  factory RootChapterModel.fromJson(Map<String, dynamic> json) =>
-      _$RootChapterModelFromJson(json);
-  Map<String, dynamic> toJson() => _$RootChapterModelToJson(this);
+  factory ChapterListModel.fromJson(Map<String, dynamic> json) {
+    final List<ChapterModel> chapterModels = (json['chapters'] as List)
+        .map((chapterJson) => ChapterModel.fromJson(chapterJson))
+        .toList();
+    return ChapterListModel(chapters: chapterModels);
+  }
 }
 
-@JsonSerializable()
-class ChapterModel {
-  int id;
-  String revelation_place;
-  int revelation_order;
-  bool bismillah_pre;
-  String name_complex;
-  String name_arabic;
-  int verses_count;
-  List<int> pages;
-  TranslatedName translated_name;
+@Entity(tableName: 'chapter', primaryKeys: ['id'])
+class ChapterModel extends ChapterEntity {
+  @TypeConverters([IntListConverter, TranslatedNameEntityConverter])
+  const ChapterModel({
+    int? id,
+    String? revelationPlace,
+    int? revelationOrder,
+    bool? bismillahPre,
+    String? nameComplex,
+    String? nameArabic,
+    int? versesCount,
+    // @TypeConverters([IntListConverter]) List<int>? pages,
+    @TypeConverters([TranslatedNameEntityConverter])
+    TranslatedNameEntity? translatedName,
+  }) : super(
+          id: id,
+          revelationPlace: revelationPlace,
+          revelationOrder: revelationOrder,
+          bismillahPre: bismillahPre,
+          nameComplex: nameComplex,
+          nameArabic: nameArabic,
+          versesCount: versesCount,
+          // pages: pages,
+          translatedName: translatedName,
+        );
 
-  ChapterModel({
-    required this.id,
-    required this.revelation_place,
-    required this.revelation_order,
-    required this.bismillah_pre,
-    required this.name_complex,
-    required this.name_arabic,
-    required this.verses_count,
-    required this.pages,
-    required this.translated_name
-  });
+// ... rest of the class ...
 
-  factory ChapterModel.fromJson(Map<String, dynamic> json) => _$ChapterModelFromJson(json);
-  Map<String, dynamic> toJson() => _$ChapterModelToJson(this);
+// Rest of the class remains the same
 
+  factory ChapterModel.fromJson(Map<String, dynamic> json) {
+    return ChapterModel(
+      id: json['id'],
+      revelationPlace: json['revelation_place'],
+      revelationOrder: json['revelation_order'],
+      bismillahPre: json['bismillah_pre'],
+      nameComplex: json['name_complex'],
+      nameArabic: json['name_arabic'],
+      versesCount: json['verses_count'],
+      //  pages: json['pages'] != null ? List<int>.from(json['pages']) : null,
+      translatedName: TranslatedNameEntity.fromJson(json['translated_name']),
+    );
+  }
+
+  factory ChapterModel.fromEntity(ChapterEntity entity) {
+    return ChapterModel(
+      id: entity.id,
+      revelationPlace: entity.revelationPlace,
+      revelationOrder: entity.revelationOrder,
+      bismillahPre: entity.bismillahPre,
+      nameComplex: entity.nameComplex,
+      nameArabic: entity.nameArabic,
+      versesCount: entity.versesCount,
+      // pages: pages,
+      translatedName: entity.translatedName,
+    );
+  }
 }
 
-@JsonSerializable()
-class TranslatedName {
-  String language_name;
-  String name;
+class IntListConverter extends TypeConverter<List<int>, String> {
+  @override
+  List<int> decode(String databaseValue) {
+    if (databaseValue.isEmpty) {
+      return [];
+    }
+    return databaseValue.split(',').map((str) => int.parse(str)).toList();
+  }
 
-  TranslatedName({required this.language_name, required this.name});
+  @override
+  String encode(List<int> value) {
+    return value.join(',');
+  }
+}
 
-  factory TranslatedName.fromJson(Map<String, dynamic> json) =>
-      _$TranslatedNameFromJson(json);
-  Map<String, dynamic> toJson() => _$TranslatedNameToJson(this);
+class TranslatedNameEntityConverter
+    extends TypeConverter<TranslatedNameEntity?, String> {
+  @override
+  TranslatedNameEntity? decode(String databaseValue) {
+    if (databaseValue != null) {
+      final Map<String, dynamic> map = json.decode(databaseValue);
+      return TranslatedNameEntity.fromJson(map);
+    }
+    return null;
+  }
+
+  @override
+  String encode(TranslatedNameEntity? value) {
+    if (value != null) {
+      final Map<String, dynamic> map = value.toJson();
+      return json.encode(map);
+    }
+    return "";
+  }
 }
